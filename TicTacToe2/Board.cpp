@@ -26,26 +26,27 @@ std::string Board::DisplayBoard(int cursor_location)
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             if (i == 0 || i == width - 1) {
-                std::cout << "##";
+                std::cout << "####";
             }
             else
             {
+                std::cout << "#";
                 if ((i * height) + (j * width) == cursor_location) {
-                    std::cout << "#V";
+                    std::cout << "[";
                 }
-                else if (cells[(i * height) + (j * width)] != CellType::empty) {
-                    std::cout << "#";
-                    if (cells[(i * height) + (j * width)] == CellType::X) {
-                        std::cout << "X";
-                    }
-                    else
-                    {
-                        std::cout << "O";
-                    }
+                if (cells[(i * height) + (j * width)] == CellType::X) {
+                    std::cout << "X";
+                }
+                else if (cells[(i * height) + (j * width)] == CellType::O)
+                {
+                    std::cout << "O";
                 }
                 else
                 {
-                    std::cout << "# ";
+                    std::cout << " ";
+                }
+                if ((i * height) + (j * width) == cursor_location) {
+                    std::cout << "]";
                 }
             }
             if (j == width - 1) {
@@ -57,15 +58,17 @@ std::string Board::DisplayBoard(int cursor_location)
 }
 
 
-void Board::SetCellAt(int index, CellType type)
+bool Board::SetCellAt(int index, CellType type)
 {
     if (cells[index] == CellType::empty) {
         cells[index] = type;
         filled_cells++;
+        return true;
     }
     else
     {
         std::cout << "Cell ini sudah diisi!\n";
+        return false;
     }
 }
 

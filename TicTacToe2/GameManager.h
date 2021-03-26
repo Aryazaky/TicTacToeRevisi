@@ -35,6 +35,10 @@ private:
 	CellType CheckWin();
 	void RandomizeTurn();
 	void GameLoop();
+	void AddMatchHistoryToAll();
+	void PlayTurn();
+	void AIControl(bool& done);
+	void KeyboardControl(int& clicks, bool& done);
 	// Menampilkan game ke console
 	void DisplayGame();
 	// Mengecek apakah board size > 0, player > 0, dan turncount == 0

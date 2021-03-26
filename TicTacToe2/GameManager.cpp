@@ -37,7 +37,7 @@ void GameManager::AddPlayers(int count)
 // Mengacak isi vector. Index vector = turn
 void GameManager::RandomizeTurn()
 {
-    std::shuffle(std::begin(player_list), std::end(player_list), rng);
+    std::shuffle(std::begin(player_list), std::end(player_list), std::default_random_engine(0));
     if (game_state != GameState::idle) {
         std::cout << "Urutan giliran tidak dapat diubah jika permainan sedang berlangsung\n";
     }
@@ -65,53 +65,86 @@ void GameManager::GameLoop()
 {
     while (game_state==GameState::playing)
     {
-        cursor = 0;
-        bool done = false;
-        int clicks = 0;
-        while (!done) {
-            DisplayGame();
-            if (_kbhit()) {
-                clicks++;
-                char ch = _getch();
-                switch (ch)
-                {
-                case'a':
-                    cursor--;
-                    if (cursor < 0) {
-                        cursor = board.Size() - 1;
-                    }
-                    clicks = 0;
-                    break;
-                case'd':
-                    cursor++;
-                    cursor %= board.Size();
-                    clicks = 0;
-                    break;
-                case'x':
-                    done = true;
-                    board.SetCellAt(cursor, player_list[turn].GetType());
-                    CheckWin();
-                    clicks = 0;
-                    break;
-                default:
-                    if (clicks > 3) {
-                        std::cout << "Kontrol menggunakan a dan d untuk gerak. x untuk pilih.\n";
-                        clicks = 0;
-                    }
-                    break;
-                }
-            }
-            if (winner != CellType::empty) {
-                done = true;
-                game_state = GameState::finished;
-            }
-        }
+        PlayTurn();
         NextTurn();
         SaveGameAsTxt();
     }
+    AddMatchHistoryToAll();
+}
+
+void GameManager::AddMatchHistoryToAll()
+{
     for (auto& player : player_list) {
         player.AddMatchHistory(GetMatchStateOf(player));
         std::cout << player.GetName() << "\n" << player.DisplayMatchHistory() << "\n\n";
+    }
+}
+
+void GameManager::PlayTurn()
+{
+    cursor = 0;
+    bool done = false;
+    int clicks = 0;
+    bool isAI = isSubstring("AI", player_list[turn].GetName());
+    while (!done) {
+        DisplayGame();
+        // Jika ada AI di nama player, maka kelakuannya auto
+        if (isAI) {
+            AIControl(done);
+        }
+        else
+        {
+            KeyboardControl(clicks, done);
+        }
+        if (winner != CellType::empty) {
+            done = true;
+            game_state = GameState::finished;
+        }
+    }
+}
+
+void GameManager::AIControl(bool& done)
+{
+    if (!board.SetCellAt(rand() % board.Size(), player_list[turn].GetType()))
+    {
+        CheckWin();
+        done = true;
+    }
+}
+
+void GameManager::KeyboardControl(int& clicks, bool& done)
+{
+    if (_kbhit()) {
+        clicks++;
+        char ch = _getch();
+        switch (ch)
+        {
+        case'a':
+            cursor--;
+            if (cursor < 0) {
+                cursor = board.Size() - 1;
+            }
+            clicks = 0;
+            break;
+        case'd':
+            cursor++;
+            cursor %= board.Size();
+            clicks = 0;
+            break;
+        case'x':
+            if (board.SetCellAt(cursor, player_list[turn].GetType())) {
+                CheckWin();
+                clicks = 0;
+                done = true;
+            }
+            break;
+        default:
+            if (clicks > 3) {
+                std::cout << "Kontrol menggunakan a dan d untuk gerak. x untuk pilih.\n";
+                clicks = 0;
+            }
+            break;
+        }
     }
 }
 
@@ -219,4 +252,5 @@ MatchState GameManager::GetMatchStateOf(Player player)
             return MatchState::win;
         }
     }
+    return MatchState::empty;
 }
