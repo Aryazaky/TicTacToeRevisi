@@ -1,5 +1,28 @@
 #include "GameManager.h"
 
+// Returns true if s1 is substring of s2
+int isSubstring(std::string s1, std::string s2)
+{
+    int M = s1.length();
+    int N = s2.length();
+
+    /* A loop to slide pat[] one by one */
+    for (int i = 0; i <= N - M; i++) {
+        int j;
+
+        /* For current index i, check for
+        pattern match */
+        for (j = 0; j < M; j++)
+            if (s2[i + j] != s1[j])
+                break;
+
+        if (j == M)
+            return i;
+    }
+
+    return -1;
+}
+
 GameManager::GameManager()
 {
     srand(time(NULL));
@@ -8,6 +31,8 @@ GameManager::GameManager()
     turn = -1;
     turn_count = 0;
     cursor = 0;
+
+    filepath = "D:\\tictactoe_savedata.txt";
 }
 
 bool GameManager::LoadGameFromTxt(std::string raw_text)
@@ -28,7 +53,9 @@ bool GameManager::SaveGameAsTxt()
 void GameManager::AddPlayers(int count)
 {
     std::string name;
+    int init = count;
     while (count--) {
+        std::cout << "Isi nama player baru (" << init - count << " dari " << init << "): ";
         std::cin >> name;
         player_list.push_back(Player(name, AssignCellType()));
     }
@@ -253,4 +280,41 @@ MatchState GameManager::GetMatchStateOf(Player player)
         }
     }
     return MatchState::empty;
+}
+
+
+// Mengubah filepath save/load file. Jika tidak dispesifikasikan nama file, defaultnya saves.txt
+void GameManager::SetFilepath()
+{
+    // TODO: Add your implementation code here.
+}
+
+
+void GameManager::LoadSaveFile()
+{
+    // Open txt file 
+    std::ifstream file(filepath);
+    std::string line;
+
+    // After this attempt to open a file, we can safely use perror() only  
+    // in case f.is_open() returns False.
+    if (!file.is_open())
+        perror(("error while opening file " + filepath).c_str());
+    // Read the file via std::getline(). Rules obeyed:
+    //   - first the I/O operation, then error check, then data processing
+    //   - failbit and badbit prevent data processing, eofbit does not
+    while (getline(file, line)) {
+        ProcessLine(line);
+    }
+    // Only in case of set badbit we are sure that errno has been set in
+    // the current context. Use perror() to print error details.
+    if (file.bad())
+        perror(("error while reading file " + filepath).c_str());
+    file.close();
+}
+
+
+void GameManager::ProcessLine(std::string& line)
+{
+
 }
