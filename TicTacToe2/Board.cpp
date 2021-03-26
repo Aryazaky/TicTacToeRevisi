@@ -1,21 +1,72 @@
 #include "Board.h"
+#include<iostream>
 
-
-void Board::GenerateEmptyCells(int cell_count)
+Board::Board()
 {
-    // TODO: Add your implementation code here.
+    filled_cells = 0;
+    width = -1;
+    height = -1;
+}
+
+void Board::GenerateEmptyCells(int _width, int _height)
+{
+    int val = _width * _height;
+    while (val--)
+    {
+        cells.push_back(CellType::empty);
+    }
+    width = _width;
+    height = _height;
 }
 
 
-void Board::DisplayBoard()
+std::string Board::DisplayBoard(int cursor_location)
 {
-    // TODO: Add your implementation code here.
+    std::string out;
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            if (i == 0 || i == width - 1) {
+                std::cout << "##";
+            }
+            else
+            {
+                if ((i * height) + (j * width) == cursor_location) {
+                    std::cout << "#V";
+                }
+                else if (cells[(i * height) + (j * width)] != CellType::empty) {
+                    std::cout << "#";
+                    if (cells[(i * height) + (j * width)] == CellType::X) {
+                        std::cout << "X";
+                    }
+                    else
+                    {
+                        std::cout << "O";
+                    }
+                }
+                else
+                {
+                    std::cout << "# ";
+                }
+            }
+            if (j == width - 1) {
+                std::cout << "#\n";
+            }
+        }
+    }
+    return out;
 }
 
 
-void Board::SetCellAt(int index, CellType to_state)
+void Board::SetCellAt(int index, CellType type)
 {
-    // TODO: Add your implementation code here.
+    if (cells[index] == CellType::empty) {
+        cells[index] = type;
+        filled_cells++;
+    }
+    else
+    {
+        std::cout << "Cell ini sudah diisi!\n";
+    }
 }
 
 
@@ -44,9 +95,19 @@ CellType Board::CheckDiagonal()
 void Board::ClearCells()
 {
     cells.clear();
+    filled_cells = 0;
 }
 
 int Board::Size()
 {
     return cells.size();
+}
+
+
+bool Board::IsFull()
+{
+    if (filled_cells >= (int)cells.size()) {
+        return true;
+    }
+    return false;
 }

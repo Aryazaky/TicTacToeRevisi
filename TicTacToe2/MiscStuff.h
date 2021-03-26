@@ -2,10 +2,10 @@
 enum class CellType {
 	empty,
 	X,
-	O
+	O,
+	draw
 };
 enum class MatchState {
-	none,
 	draw,
 	win,
 	lose
