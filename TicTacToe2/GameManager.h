@@ -15,15 +15,19 @@
 
 class GameManager
 {
-	std::vector<Player> player_list;
-	Board board;
-	int turn;
-	GameState game_state;
-	int turn_count;
-	CellType winner;
 	int cursor;
 	std::string filepath;
-	std::string savedata;
+
+	struct GameData {
+		std::vector<Player> player_list;
+		Board board;
+		int turn;
+		GameState game_state;
+		int turn_count;
+		CellType winner;
+	};
+	GameData savedata;
+	GameData G;
 public:
 	GameManager();
 	void ProcessLine(std::string& line);

@@ -26,13 +26,14 @@ int isSubstring(std::string s1, std::string s2)
 GameManager::GameManager()
 {
     srand(time(NULL));
-    game_state = GameState::idle;
-    winner = CellType::empty;
-    turn = -1;
-    turn_count = 0;
+    G.game_state = GameState::idle;
+    G.winner = CellType::empty;
+    G.turn = -1;
+    G.turn_count = 0;
     cursor = 0;
 
-    filepath = "D:\\tictactoe_savedata.txt";
+    filepath = "tictactoe_savedata.txt";
+    SaveGameAsTxt();
 }
 
 bool GameManager::LoadGameFromTxt(std::string raw_text)
@@ -44,7 +45,21 @@ bool GameManager::LoadGameFromTxt(std::string raw_text)
 
 bool GameManager::SaveGameAsTxt()
 {
-    // TODO: Add your implementation code here.
+    // Object to write in file
+    std::ofstream file_obj;
+
+    // Opening file in append mode
+    file_obj.open(filepath, std::ios::app);
+
+    // Object of class to input data in file
+    GameData obj;
+
+    // Assigning data into object
+    obj = this->G;
+
+    // Writing the object's data in file
+    file_obj.write((char*)&obj, sizeof(obj));
+    file_obj.close();
     return false;
 }
 
@@ -57,18 +72,18 @@ void GameManager::AddPlayers(int count)
     while (count--) {
         std::cout << "Isi nama player baru (" << init - count << " dari " << init << "): ";
         std::cin >> name;
-        player_list.push_back(Player(name, AssignCellType()));
+        G.player_list.push_back(Player(name, AssignCellType()));
     }
 }
 
 // Mengacak isi vector. Index vector = turn
 void GameManager::RandomizeTurn()
 {
-    std::shuffle(std::begin(player_list), std::end(player_list), std::default_random_engine(0));
-    if (game_state != GameState::idle) {
+    std::shuffle(std::begin(G.player_list), std::end(G.player_list), std::default_random_engine(0));
+    if (G.game_state != GameState::idle) {
         std::cout << "Urutan giliran tidak dapat diubah jika permainan sedang berlangsung\n";
     }
-    turn = rand() % player_list.size();
+    G.turn = rand() % G.player_list.size();
 }
 
 
@@ -76,8 +91,8 @@ void GameManager::RandomizeTurn()
 void GameManager::StartGame()
 {
     IsReadyToPlay();
-    if (game_state==GameState::ready) {
-        game_state = GameState::playing;
+    if (G.game_state==GameState::ready) {
+        G.game_state = GameState::playing;
         RandomizeTurn();
         GameLoop();
     }
@@ -90,7 +105,7 @@ void GameManager::StartGame()
 
 void GameManager::GameLoop()
 {
-    while (game_state==GameState::playing)
+    while (G.game_state==GameState::playing)
     {
         PlayTurn();
         NextTurn();
@@ -101,7 +116,7 @@ void GameManager::GameLoop()
 
 void GameManager::AddMatchHistoryToAll()
 {
-    for (auto& player : player_list) {
+    for (auto& player : G.player_list) {
         player.AddMatchHistory(GetMatchStateOf(player));
         std::cout << player.GetName() << "\n" << player.DisplayMatchHistory() << "\n\n";
     }
@@ -112,7 +127,7 @@ void GameManager::PlayTurn()
     cursor = 0;
     bool done = false;
     int clicks = 0;
-    bool isAI = isSubstring("AI", player_list[turn].GetName());
+    bool isAI = isSubstring("AI", G.player_list[G.turn].GetName());
     while (!done) {
         DisplayGame();
         // Jika ada AI di nama player, maka kelakuannya auto
@@ -123,16 +138,16 @@ void GameManager::PlayTurn()
         {
             KeyboardControl(clicks, done);
         }
-        if (winner != CellType::empty) {
+        if (G.winner != CellType::empty) {
             done = true;
-            game_state = GameState::finished;
+            G.game_state = GameState::finished;
         }
     }
 }
 
 void GameManager::AIControl(bool& done)
 {
-    if (!board.SetCellAt(rand() % board.Size(), player_list[turn].GetType()))
+    if (!G.board.SetCellAt(rand() % G.board.Size(), G.player_list[G.turn].GetType()))
     {
         CheckWin();
         done = true;
@@ -149,17 +164,17 @@ void GameManager::KeyboardControl(int& clicks, bool& done)
         case'a':
             cursor--;
             if (cursor < 0) {
-                cursor = board.Size() - 1;
+                cursor = G.board.Size() - 1;
             }
             clicks = 0;
             break;
         case'd':
             cursor++;
-            cursor %= board.Size();
+            cursor %= G.board.Size();
             clicks = 0;
             break;
         case'x':
-            if (board.SetCellAt(cursor, player_list[turn].GetType())) {
+            if (G.board.SetCellAt(cursor, G.player_list[G.turn].GetType())) {
                 CheckWin();
                 clicks = 0;
                 done = true;
@@ -178,23 +193,23 @@ void GameManager::KeyboardControl(int& clicks, bool& done)
 
 CellType GameManager::CheckWin()
 {
-    if (board.CheckDiagonal() != CellType::empty) 
+    if (G.board.CheckDiagonal() != CellType::empty)
     {
-        winner = board.CheckDiagonal();
+        G.winner = G.board.CheckDiagonal();
     }
-    else if (board.CheckHorizontal() != CellType::empty)
+    else if (G.board.CheckHorizontal() != CellType::empty)
     {
-        winner = board.CheckHorizontal();
+        G.winner = G.board.CheckHorizontal();
     }
-    else if(board.CheckVertical() != CellType::empty)
+    else if(G.board.CheckVertical() != CellType::empty)
     {
-        winner = board.CheckVertical();
+        G.winner = G.board.CheckVertical();
     }
-    else if (board.IsFull())
+    else if (G.board.IsFull())
     {
-        winner = CellType::draw;
+        G.winner = CellType::draw;
     }
-    return winner;
+    return G.winner;
 }
 
 
@@ -202,22 +217,22 @@ CellType GameManager::CheckWin()
 void GameManager::DisplayGame()
 {
     system("cls");
-    std::cout << "Giliran " << player_list[turn].GetName() << "\n";
-    board.DisplayBoard(cursor);
+    std::cout << "Giliran " << G.player_list[G.turn].GetName() << "\n";
+    G.board.DisplayBoard(cursor);
 }
 
 
 // Menghapus list player dan cell di board
 void GameManager::ResetGame()
 {
-    board.ClearCells();
-    turn_count = 0;
+    G.board.ClearCells();
+    G.turn_count = 0;
 }
 
 
 void GameManager::SetBoardSize(int width, int height)
 {
-    if (game_state == GameState::playing || game_state == GameState::finished) {
+    if (G.game_state == GameState::playing || G.game_state == GameState::finished) {
         std::cout << "Tidak bisa merubah setting ketika permainan sedang berlangsung!\n";
     }
     else if (width < 1 || height < 1)
@@ -226,8 +241,8 @@ void GameManager::SetBoardSize(int width, int height)
     }
     else
     {
-        board.ClearCells();
-        board.GenerateEmptyCells(width, height);
+        G.board.ClearCells();
+        G.board.GenerateEmptyCells(width, height);
     }
 }
 
@@ -235,7 +250,8 @@ void GameManager::SetBoardSize(int width, int height)
 // Mengecek apakah board size > 0, player > 0, dan turncount == 0
 bool GameManager::IsReadyToPlay()
 {
-    if (board.Size() > 0 && player_list.size() > 0 && turn_count == 0) {
+    if (G.board.Size() > 0 && G.player_list.size() > 0 && G.turn_count == 0) {
+        G.game_state = GameState::ready;
         return true;
     }
     return false;
@@ -244,9 +260,9 @@ bool GameManager::IsReadyToPlay()
 
 void GameManager::NextTurn()
 {
-    turn += 1;
-    turn %= player_list.size();
-    turn_count++;
+    G.turn += 1;
+    G.turn %= G.player_list.size();
+    G.turn_count++;
 }
 
 
@@ -254,7 +270,7 @@ CellType GameManager::AssignCellType()
 {
     const int EMPTY_VAL = 0;
     static int assigned = EMPTY_VAL + 1;
-    if (game_state == GameState::finished) {
+    if (G.game_state == GameState::finished) {
         assigned = EMPTY_VAL + 1;
     }
     if (assigned >= static_cast<int>(CellType::draw)) {
@@ -267,9 +283,9 @@ CellType GameManager::AssignCellType()
 
 MatchState GameManager::GetMatchStateOf(Player player)
 {
-    if (winner != CellType::empty) {
-        if (player.GetType() != winner) {
-            if (winner == CellType::draw) {
+    if (G.winner != CellType::empty) {
+        if (player.GetType() != G.winner) {
+            if (G.winner == CellType::draw) {
                 return MatchState::draw;
             }
             return MatchState::lose;
@@ -286,31 +302,39 @@ MatchState GameManager::GetMatchStateOf(Player player)
 // Mengubah filepath save/load file. Jika tidak dispesifikasikan nama file, defaultnya saves.txt
 void GameManager::SetFilepath()
 {
-    // TODO: Add your implementation code here.
+    std::cout << "Filepath baru: ";
+    std::cin >> filepath;
 }
 
 
 void GameManager::LoadSaveFile()
 {
-    // Open txt file 
-    std::ifstream file(filepath);
-    std::string line;
+    //// Open txt file 
+    //std::ifstream file(filepath);
+    //std::string line;
 
-    // After this attempt to open a file, we can safely use perror() only  
-    // in case f.is_open() returns False.
-    if (!file.is_open())
-        perror(("error while opening file " + filepath).c_str());
-    // Read the file via std::getline(). Rules obeyed:
-    //   - first the I/O operation, then error check, then data processing
-    //   - failbit and badbit prevent data processing, eofbit does not
-    while (getline(file, line)) {
-        ProcessLine(line);
-    }
-    // Only in case of set badbit we are sure that errno has been set in
-    // the current context. Use perror() to print error details.
-    if (file.bad())
-        perror(("error while reading file " + filepath).c_str());
-    file.close();
+    //// After this attempt to open a file, we can safely use perror() only  
+    //// in case f.is_open() returns False.
+    //if (!file.is_open())
+    //    perror(("error while opening file " + filepath).c_str());
+    //// Read the file via std::getline(). Rules obeyed:
+    ////   - first the I/O operation, then error check, then data processing
+    ////   - failbit and badbit prevent data processing, eofbit does not
+    //while (getline(file, line)) {
+    //    ProcessLine(line);
+    //}
+    //// Only in case of set badbit we are sure that errno has been set in
+    //// the current context. Use perror() to print error details.
+    //if (file.bad())
+    //    perror(("error while reading file " + filepath).c_str());
+    //file.close();
+
+    std::ifstream file_obj;
+    file_obj.open(filepath, std::ios::in);
+    GameData obj;
+    file_obj.read((char*)&obj, sizeof(obj));
+    this->G = obj;
+    file_obj.close();
 }
 
 

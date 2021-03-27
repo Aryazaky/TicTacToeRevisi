@@ -31,13 +31,13 @@ std::string Board::DisplayBoard(int cursor_location)
             else
             {
                 std::cout << "#";
-                if ((i * height) + (j * width) == cursor_location) {
+                if ((i * height) + j == cursor_location) {
                     std::cout << "[";
                 }
-                if (cells[(i * height) + (j * width)] == CellType::X) {
+                if (cells[(i * height) + j] == CellType::X) {
                     std::cout << "X";
                 }
-                else if (cells[(i * height) + (j * width)] == CellType::O)
+                else if (cells[(i * height) + j] == CellType::O)
                 {
                     std::cout << "O";
                 }
@@ -45,7 +45,7 @@ std::string Board::DisplayBoard(int cursor_location)
                 {
                     std::cout << " ";
                 }
-                if ((i * height) + (j * width) == cursor_location) {
+                if ((i * height) + j == cursor_location) {
                     std::cout << "]";
                 }
             }
