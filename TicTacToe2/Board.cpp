@@ -24,34 +24,42 @@ std::string Board::DisplayBoard(int cursor_location)
 {
     std::string out;
     for (int i = 0; i < width; i++) {
+        if (i == 0) {
+            std::cout << "#############\n";
+        }
         for (int j = 0; j < height; j++) {
-            if (i == 0 || i == width - 1) {
-                std::cout << "####";
+            std::cout << "#";
+            if ((i * height) + j == cursor_location) {
+                std::cout << "[";
             }
             else
             {
-                std::cout << "#";
-                if ((i * height) + j == cursor_location) {
-                    std::cout << "[";
-                }
-                if (cells[(i * height) + j] == CellType::X) {
-                    std::cout << "X";
-                }
-                else if (cells[(i * height) + j] == CellType::O)
-                {
-                    std::cout << "O";
-                }
-                else
-                {
-                    std::cout << " ";
-                }
-                if ((i * height) + j == cursor_location) {
-                    std::cout << "]";
-                }
+                std::cout << " ";
+            }
+            if (cells[(i * height) + j] == CellType::X) {
+                std::cout << "X";
+            }
+            else if (cells[(i * height) + j] == CellType::O)
+            {
+                std::cout << "O";
+            }
+            else
+            {
+                std::cout << " ";
+            }
+            if ((i * height) + j == cursor_location) {
+                std::cout << "]";
+            }
+            else
+            {
+                std::cout << " ";
             }
             if (j == width - 1) {
                 std::cout << "#\n";
             }
+        }
+        if (i == width - 1) {
+            std::cout << "#############\n";
         }
     }
     return out;

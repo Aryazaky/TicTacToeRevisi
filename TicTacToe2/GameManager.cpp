@@ -128,10 +128,11 @@ void GameManager::PlayTurn()
     bool done = false;
     int clicks = 0;
     bool isAI = isSubstring("AI", G.player_list[G.turn].GetName());
+    bool disableAI = true;
     while (!done) {
         DisplayGame();
         // Jika ada AI di nama player, maka kelakuannya auto
-        if (isAI) {
+        if (isAI && !disableAI) {
             AIControl(done);
         }
         else
