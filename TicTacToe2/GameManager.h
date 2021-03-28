@@ -27,7 +27,6 @@ class GameManager
 		int turn_count;
 		CellType winner;
 	};
-	GameData savedata;
 	GameData G;
 public:
 	GameManager();

@@ -42,7 +42,7 @@ bool GameManager::SaveGameAsTxt()
     std::ofstream file_obj;
 
     // Opening file in append mode
-    file_obj.open(filepath, std::ios::app);
+    file_obj.open(filepath, std::ofstream::out | std::ofstream::trunc);
 
     // Object of class to input data in file
     GameData obj;
@@ -321,7 +321,9 @@ void GameManager::LoadSaveFile()
         //   - first the I/O operation, then error check, then data processing
         //   - failbit and badbit prevent data processing, eofbit does not
         file.read((char*)&obj, sizeof(obj));
+        std::cout << "\nOBJ " << obj.turn << " " << obj.turn_count;
         this->G = obj;
+        std::cout << "\nThis " << obj.turn << " " << obj.turn_count;
         // Only in case of set badbit we are sure that errno has been set in
         // the current context. Use perror() to print error details.
         if (file.bad()) {
