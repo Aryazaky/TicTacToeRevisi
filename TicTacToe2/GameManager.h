@@ -26,6 +26,13 @@ class GameManager
 		GameState game_state;
 		int turn_count;
 		CellType winner;
+
+		GameData() {
+			game_state = GameState::idle;
+			winner = CellType::empty;
+			turn = -1;
+			turn_count = 0;
+		}
 	};
 	GameData G;
 public:

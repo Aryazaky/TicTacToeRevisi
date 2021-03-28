@@ -8,7 +8,7 @@ int isSubstring(std::string s1, std::string s2)
     }
     /* A loop to slide pat[] one by one */
     for (int i = 0; i < (std::ptrdiff_t)s2.size() - (std::ptrdiff_t)s1.size(); i++) {
-        int j;
+        size_t j;
 
         /* For current index i, check for
         pattern match */
@@ -26,10 +26,6 @@ int isSubstring(std::string s1, std::string s2)
 GameManager::GameManager()
 {
     srand(time(NULL));
-    G.game_state = GameState::idle;
-    G.winner = CellType::empty;
-    G.turn = -1;
-    G.turn_count = 0;
     cursor = 0;
 
     filepath = "tictactoe_savedata.txt";
@@ -212,8 +208,7 @@ CellType GameManager::CheckWin()
 void GameManager::DisplayGame()
 {
     system("cls");
-    std::cout << "AI Controls! Turn " << G.turn;
-    std::cout << "Giliran " << G.player_list[G.turn].GetName() << "\n";
+    std::cout << "Turn " << G.turn << ", Giliran " << G.player_list[G.turn].GetName() << "\n";
     G.board.DisplayBoard(cursor);
 }
 
@@ -310,7 +305,6 @@ void GameManager::LoadSaveFile()
         std::ifstream file;
         std::string line;
         file.open(filepath, std::ios::in);
-        GameData obj;
 
         // After this attempt to open a file, we can safely use perror() only  
         // in case f.is_open() returns False.
@@ -320,16 +314,16 @@ void GameManager::LoadSaveFile()
         // Read the file via std::getline(). Rules obeyed:
         //   - first the I/O operation, then error check, then data processing
         //   - failbit and badbit prevent data processing, eofbit does not
-        file.read((char*)&obj, sizeof(obj));
-        std::cout << "\nOBJ " << obj.turn << " " << obj.turn_count;
-        this->G = obj;
-        std::cout << "\nThis " << obj.turn << " " << obj.turn_count;
+        file.seekg(0);
+        file.read((char*)&G, sizeof(G));
+
         // Only in case of set badbit we are sure that errno has been set in
         // the current context. Use perror() to print error details.
         if (file.bad()) {
             perror(("error while reading file " + filepath).c_str());
         }
         file.close();
+        DisplayGame();
     }
     else {
         SaveGameAsTxt();

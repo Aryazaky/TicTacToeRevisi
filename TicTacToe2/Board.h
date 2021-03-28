@@ -19,5 +19,6 @@ public:
 	void ClearCells();
 	int Size();
 	bool IsFull();
+	bool IsEmpty();
 };
 

@@ -212,3 +212,9 @@ bool Board::IsFull()
     }
     return false;
 }
+
+
+bool Board::IsEmpty()
+{
+    return cells.empty();
+}
