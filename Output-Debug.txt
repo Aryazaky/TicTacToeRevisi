@@ -1,0 +1,56 @@
+﻿'TicTacToe2.exe' (Win32): Loaded 'C:\Users\Keluarga\source\repos\TicTacToe2\Debug\TicTacToe2.exe'. Symbols loaded.
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ntdll.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\kernel32.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\KernelBase.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Program Files\Avast Software\Avast\x86\aswhook.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msvcp140d.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\vcruntime140d.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ucrtbased.dll'. 
+The thread 0x421c has exited with code 0 (0x0).
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\sechost.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\rpcrt4.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\sspicli.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cryptbase.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\bcryptprimitives.dll'. 
+Debug Assertion Failed!
+
+Program: C:\Users\Keluarga\source\repos\TicTacToe2\Debug\TicTacToe2.exe
+File: D:\ProgramData\Microsoft\VisualStudio\VS Community IDE\VC\Tools\MSVC\14.28.29910\include\vector
+Line: 1508
+
+Expression: vector subscript out of range
+
+For information on how your program can cause an assertion
+failure, see the Visual C++ documentation on asserts.
+
+(Press Retry to debug the application)
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\kernel.appcore.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msvcrt.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\user32.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\win32u.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\gdi32.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\gdi32full.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msvcp_win.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ucrtbase.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\imm32.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\uxtheme.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\combase.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msctf.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\oleaut32.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\advapi32.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\TextInputFramework.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\CoreMessaging.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\CoreUIComponents.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\SHCore.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ntmarta.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\WinTypes.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\WinTypes.dll'. 
+'TicTacToe2.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\WinTypes.dll'
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\oleacc.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\iertutil.dll'. 
+'TicTacToe2.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ole32.dll'. 
+The thread 0x25dc has exited with code 3 (0x3).
+The thread 0x3e5c has exited with code 3 (0x3).
+The thread 0x2880 has exited with code 3 (0x3).
+The thread 0x3e18 has exited with code 3 (0x3).
+The program '[13888] TicTacToe2.exe' has exited with code 3 (0x3).

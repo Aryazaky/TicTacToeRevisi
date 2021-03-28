@@ -3,20 +3,20 @@
 // Returns true if s1 is substring of s2
 int isSubstring(std::string s1, std::string s2)
 {
-    int M = s1.length();
-    int N = s2.length();
-
+    if (s1.size() > s2.size()) {
+        return -1;
+    }
     /* A loop to slide pat[] one by one */
-    for (int i = 0; i <= N - M; i++) {
+    for (int i = 0; i < (std::ptrdiff_t)s2.size() - (std::ptrdiff_t)s1.size(); i++) {
         int j;
 
         /* For current index i, check for
         pattern match */
-        for (j = 0; j < M; j++)
+        for (j = 0; j < s1.size() && j < s2.size() - 1; j++)
             if (s2[i + j] != s1[j])
                 break;
 
-        if (j == M)
+        if (j == s1.length())
             return i;
     }
 
@@ -33,13 +33,6 @@ GameManager::GameManager()
     cursor = 0;
 
     filepath = "tictactoe_savedata.txt";
-    SaveGameAsTxt();
-}
-
-bool GameManager::LoadGameFromTxt(std::string raw_text)
-{
-    // TODO: Add your implementation code here.
-    return false;
 }
 
 
@@ -127,12 +120,12 @@ void GameManager::PlayTurn()
     cursor = 0;
     bool done = false;
     int clicks = 0;
-    bool isAI = isSubstring("AI", G.player_list[G.turn].GetName());
-    bool disableAI = true;
+    int isAI = isSubstring("_AI_", G.player_list[G.turn].GetName());
+    bool disableAI = false;
     while (!done) {
         DisplayGame();
         // Jika ada AI di nama player, maka kelakuannya auto
-        if (isAI && !disableAI) {
+        if (isAI >= 0 && !disableAI) {
             AIControl(done);
         }
         else
@@ -175,6 +168,7 @@ void GameManager::KeyboardControl(int& clicks, bool& done)
             clicks = 0;
             break;
         case'x':
+            std::cout << "G,turn=" << G.turn;
             if (G.board.SetCellAt(cursor, G.player_list[G.turn].GetType())) {
                 CheckWin();
                 clicks = 0;
@@ -218,6 +212,7 @@ CellType GameManager::CheckWin()
 void GameManager::DisplayGame()
 {
     system("cls");
+    std::cout << "AI Controls! Turn " << G.turn;
     std::cout << "Giliran " << G.player_list[G.turn].GetName() << "\n";
     G.board.DisplayBoard(cursor);
 }
@@ -310,36 +305,31 @@ void GameManager::SetFilepath()
 
 void GameManager::LoadSaveFile()
 {
-    //// Open txt file 
-    //std::ifstream file(filepath);
-    //std::string line;
+    if (std::filesystem::exists(filepath)) {
+        // Open txt file 
+        std::ifstream file;
+        std::string line;
+        file.open(filepath, std::ios::in);
+        GameData obj;
 
-    //// After this attempt to open a file, we can safely use perror() only  
-    //// in case f.is_open() returns False.
-    //if (!file.is_open())
-    //    perror(("error while opening file " + filepath).c_str());
-    //// Read the file via std::getline(). Rules obeyed:
-    ////   - first the I/O operation, then error check, then data processing
-    ////   - failbit and badbit prevent data processing, eofbit does not
-    //while (getline(file, line)) {
-    //    ProcessLine(line);
-    //}
-    //// Only in case of set badbit we are sure that errno has been set in
-    //// the current context. Use perror() to print error details.
-    //if (file.bad())
-    //    perror(("error while reading file " + filepath).c_str());
-    //file.close();
-
-    std::ifstream file_obj;
-    file_obj.open(filepath, std::ios::in);
-    GameData obj;
-    file_obj.read((char*)&obj, sizeof(obj));
-    this->G = obj;
-    file_obj.close();
-}
-
-
-void GameManager::ProcessLine(std::string& line)
-{
-
+        // After this attempt to open a file, we can safely use perror() only  
+        // in case f.is_open() returns False.
+        if (!file.is_open()) {
+            perror(("error while opening file " + filepath).c_str());
+        }
+        // Read the file via std::getline(). Rules obeyed:
+        //   - first the I/O operation, then error check, then data processing
+        //   - failbit and badbit prevent data processing, eofbit does not
+        file.read((char*)&obj, sizeof(obj));
+        this->G = obj;
+        // Only in case of set badbit we are sure that errno has been set in
+        // the current context. Use perror() to print error details.
+        if (file.bad()) {
+            perror(("error while reading file " + filepath).c_str());
+        }
+        file.close();
+    }
+    else {
+        SaveGameAsTxt();
+    }
 }

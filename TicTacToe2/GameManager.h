@@ -12,6 +12,7 @@
 #include<random>
 #include<algorithm>
 #include<windows.h>
+#include<filesystem>
 
 class GameManager
 {
@@ -30,7 +31,6 @@ class GameManager
 	GameData G;
 public:
 	GameManager();
-	void ProcessLine(std::string& line);
 	void LoadSaveFile();
 	// Ngisi data player di dalam fungsi
 	void AddPlayers(int count);
@@ -44,7 +44,6 @@ public:
 private:
 	// Private karena auto save
 	bool SaveGameAsTxt();
-	bool LoadGameFromTxt(std::string raw_text);
 
 	CellType CheckWin();
 	void RandomizeTurn();

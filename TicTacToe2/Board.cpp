@@ -68,6 +68,10 @@ std::string Board::DisplayBoard(int cursor_location)
 
 bool Board::SetCellAt(int index, CellType type)
 {
+    if (index > cells.size() - 1 || index < 0) {
+        std::cout << "Cell ini tidak ada!\n";
+        return false;
+    }
     if (cells[index] == CellType::empty) {
         cells[index] = type;
         filled_cells++;
@@ -83,22 +87,108 @@ bool Board::SetCellAt(int index, CellType type)
 
 CellType Board::CheckHorizontal()
 {
-    // TODO: Add your implementation code here.
-    return CellType();
+    int w = width;
+    int h = height;
+    int reqO, reqX;
+    while (h--)
+    {
+        reqO = width;
+        reqX = width;
+        w = width;
+        while (w--)
+        {
+            if (cells[(height - h - 1) * height + (width - w - 1)] == CellType::O) {
+                reqO--;
+            }
+            else if (cells[(height - h - 1) * height + (width - w - 1)] == CellType::X) {
+                reqX--;
+            }
+            if (reqO == 0) {
+                return CellType::O;
+            }
+            else if (reqX == 0) {
+                return CellType::X;
+            }
+        }
+    }
+    return CellType::empty;
 }
 
 
 CellType Board::CheckVertical()
 {
-    // TODO: Add your implementation code here.
-    return CellType();
+    int w = width;
+    int h = height;
+    int reqO, reqX;
+    while (h--)
+    {
+        reqO = height;
+        reqX = height;
+        w = width;
+        while (w--)
+        {
+            if (cells[(height - h - 1) + (width - w - 1) * width] == CellType::O) {
+                reqO--;
+            }
+            else if (cells[(height - h - 1) + (width - w - 1) * width] == CellType::X) {
+                reqX--;
+            }
+            if (reqO == 0) {
+                return CellType::O;
+            }
+            else if (reqX == 0) {
+                return CellType::X;
+            }
+        }
+    }
+    return CellType::empty;
 }
 
 
 CellType Board::CheckDiagonal()
 {
-    // TODO: Add your implementation code here.
-    return CellType();
+    int min = width > height ? height : width;
+    if (width != height) {
+        std::cout << "Warning! CekDiagonal() masih belum mendukung untuk nilai width dan height yang tidak sama. Akan return empty.";
+        return CellType::empty;
+    }
+    int reqO, reqX;
+    reqO = width > height ? height : width;
+    reqX = width > height ? height : width;
+    while (min--)
+    {
+        if (cells[(height - min - 1) + (width - min - 1)] == CellType::O) {
+            reqO--;
+        }
+        else if (cells[(height - min - 1) + (width - min - 1)] == CellType::X) {
+            reqX--;
+        }
+        if (reqO == 0) {
+            return CellType::O;
+        }
+        else if (reqX == 0) {
+            return CellType::X;
+        }
+    }
+    min = width > height ? height : width;
+    reqO = min;
+    reqX = min;
+    while (min--)
+    {
+        if (cells[2 * ((height - min - 1) + (width - min - 1))] == CellType::O) {
+            reqO--;
+        }
+        else if (cells[2 * ((height - min - 1) + (width - min - 1))] == CellType::X) {
+            reqX--;
+        }
+        if (reqO == 0) {
+            return CellType::O;
+        }
+        else if (reqX == 0) {
+            return CellType::X;
+        }
+    }
+    return CellType::empty;
 }
 
 
